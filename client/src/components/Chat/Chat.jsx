@@ -107,7 +107,8 @@ const Chat = ({ userId, name, room, prevMessages, roomId, roomHost }) => {
       socket.current.emit("sendMessage", message, () => setMessage(""));
       socket.current.emit("stop-typing");
       playSent();
-      await postMessage({ userId, roomId: room._id, message });
+      const result = await postMessage({ userId, roomId: room._id, message }).unwrap();
+      setMessages((messages) => [...messages, result]);
     }
   };
 
@@ -130,6 +131,10 @@ const Chat = ({ userId, name, room, prevMessages, roomId, roomHost }) => {
         setTyping(false);
       }
     }, timerLength);
+  };
+
+  const handleDelete = (messageId) => {
+    setMessages(messages.filter((message) => message._id !== messageId));
   };
 
   const GreenButton = styled(IconButton)(() => ({
@@ -155,7 +160,14 @@ const Chat = ({ userId, name, room, prevMessages, roomId, roomHost }) => {
   return (
     <Box ref={scrollRef}>
       <div style={inCall ? { minHeight: "85vh" } : { minHeight: "70vh" }}>
-        <Messages messages={messages} name={name} userId={userId} roomId={roomId} roomHost={roomHost} />
+        <Messages
+          messages={messages}
+          name={name}
+          userId={userId}
+          roomId={roomId}
+          roomHost={roomHost}
+          onDelete={handleDelete}
+        />
 
         {showCall && (
           <Box

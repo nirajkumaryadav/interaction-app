@@ -67,7 +67,7 @@ export const api = createApi({
       query: ({ userId, roomId }) => ({
         url: `rooms/${userId}/${roomId}`,
       }),
-      providedTags: (result, error, id) => [{ type: "Room", id }],
+      providesTags: (result, error, { roomId }) => [{ type: "Room", id: roomId }],
     }),
 
     addUserInRoom: builder.mutation({
@@ -76,7 +76,7 @@ export const api = createApi({
         method: "PATCH",
         body: { newUserId: data.newUserId },
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Room", id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: "Room", id: arg.roomId }],
     }),
 
     removeUserFromRoom: builder.mutation({
@@ -85,7 +85,7 @@ export const api = createApi({
         method: "PATCH",
         body: { newUserId: data.newUserId },
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Room", id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: "Room", id: arg.roomId }],
     }),
 
     postMessage: builder.mutation({
@@ -94,7 +94,7 @@ export const api = createApi({
         method: "POST",
         body: { message: data.message },
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Room", id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: "Room", id: arg.roomId }],
     }),
 
     uploadFile: builder.mutation({

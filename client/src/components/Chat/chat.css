@@ -6,3 +6,19 @@
 	background-color: #ffffff;
 	max-width: 80%;
 }
+
+.message-container {
+  position: relative;
+}
+
+.delete-icon {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.message-container:hover .delete-icon {
+  display: block;
+}

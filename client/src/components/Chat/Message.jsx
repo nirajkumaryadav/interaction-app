@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useDeleteMessageMutation } from '../../redux/api';
 import './chat.css';
 import '../../index.scss';
+import { toast } from "react-toastify"; // Add this line
 
 const Message = ({ message, name, userId, roomId, roomHost }) => {
   const [deleteMessage] = useDeleteMessageMutation();
@@ -45,7 +46,7 @@ const Message = ({ message, name, userId, roomId, roomHost }) => {
   };
 
   return isSentByCurrentUser ? (
-    <div className="row justify-content-end pl-5 ">
+    <div className="row justify-content-end pl-5 message-container">
       <div className="rec d-flex flex-column align-items-end m-2 shadow p-2  border rounded w-auto">
         <div>
           <em className="m-1 flex-start fw-bold text-uppercase">{name}</em>
@@ -62,7 +63,7 @@ const Message = ({ message, name, userId, roomId, roomHost }) => {
         )}
         {canDelete && (
           <Tooltip title="Delete">
-            <IconButton onClick={handleDelete} size="small">
+            <IconButton onClick={handleDelete} size="small" className="delete-icon">
               <DeleteIcon fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -70,7 +71,7 @@ const Message = ({ message, name, userId, roomId, roomHost }) => {
       </div>
     </div>
   ) : (
-    <div className="row justify-content-start pl-5 ">
+    <div className="row justify-content-start pl-5 message-container">
       <Avatar sx={{ marginTop: '12px' }}>
         <PersonIcon />
       </Avatar>
@@ -92,7 +93,7 @@ const Message = ({ message, name, userId, roomId, roomHost }) => {
         )}
         {canDelete && (
           <Tooltip title="Delete">
-            <IconButton onClick={handleDelete} size="small">
+            <IconButton onClick={handleDelete} size="small" className="delete-icon">
               <DeleteIcon fontSize="small" />
             </IconButton>
           </Tooltip>
