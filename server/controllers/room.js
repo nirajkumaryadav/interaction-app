@@ -240,3 +240,36 @@ export const uploadFile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const deleteMessage = async (req, res) => {
+  const { userid: userId, id: roomId, messageId } = req.params;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const room = await Room.findById(roomId);
+    if (!room) {
+      return res.status(404).json({ message: "Room not found" });
+    }
+
+    const message = room.messages.id(messageId);
+    if (!message) {
+      return res.status(404).json({ message: "Message not found" });
+    }
+
+    if (message.senderId !== userId && room.host !== userId) {
+      return res.status(403).json({ message: "Not authorized to delete this message" });
+    }
+
+    message.remove();
+    await room.save();
+
+    return res.status(200).json({ message: "Message deleted successfully" });
+  } catch (error) {
+    console.error('Delete message error:', error);
+    return res.status(500).json({ message: "Error deleting message" });
+  }
+};

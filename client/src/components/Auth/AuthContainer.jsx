@@ -17,10 +17,14 @@ const AuthContainer = () => {
         value={alignment}
         exclusive
         onChange={handleChange}
-        sx={{ bgcolor: "whitesmoke" }}
+        sx={{ bgcolor: "whitesmoke", borderRadius: "8px" }}
       >
-        <ToggleButton value="login">Login</ToggleButton>
-        <ToggleButton value="register">Register</ToggleButton>
+        <ToggleButton value="login" sx={{ color: "black", bgcolor: "white" }}>
+          Login
+        </ToggleButton>
+        <ToggleButton value="register" sx={{ color: "black", bgcolor: "white" }}>
+          Register
+        </ToggleButton>
       </ToggleButtonGroup>
       {alignment === "login" ? <Login /> : <Register />}
     </div>

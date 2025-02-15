@@ -27,7 +27,9 @@ const CreateRoomForm = () => {
   return (
     <>
       <div className="foot2">
-        <label className="fw-bold" htmlFor="roomName">Create new room</label>
+        <label className="fw-bold" htmlFor="roomName">
+          Create new room
+        </label>
         <form className="form-group d-flex" onSubmit={onSubmit}>
           <input
             required
@@ -36,7 +38,7 @@ const CreateRoomForm = () => {
             value={roomNameField}
             autoComplete="off"
             onChange={(e) => setRoomNameField(e.target.value)}
-            className="form-control bg-light"
+            className="form-control"
           />
           <button type="submit" value="submit" className="btn btn-primary">
             <AddIcon />

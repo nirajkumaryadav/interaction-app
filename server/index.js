@@ -31,17 +31,13 @@ app.use("/users", userRoutes);
 app.use("/rooms", roomRoutes);
 
 // Add this line to serve uploaded files
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get("/", (req, res) => {
   res.send("API");
 });
 
-// const CONNECTION_URL = process.env.CONNECTION_URL;
-const CONNECTION_URL ="mongodb+srv://pratham:nE6ma2bjjSJ5ZVRh@cluster0.cojuu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-
-console.log(CONNECTION_URL);
-
+const CONNECTION_URL = process.env.CONNECTION_URL;
 const PORT = process.env.PORT || 5000;
 
 mongoose.set('strictQuery', true); 

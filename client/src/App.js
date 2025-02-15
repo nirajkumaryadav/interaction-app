@@ -12,7 +12,6 @@ import Backdropp from "./utils/Backdropp";
 import Auth from "./Pages/AuthPage/Auth";
 
 const ChatPage = React.lazy(() => import("./Pages/ChatPage/ChatPage"));
-const VideoCall = React.lazy(() => import("./Pages/VideoCallPage/VideoCall"));
 const Room = React.lazy(() => import("./components/Room/Room"));
 const NoChatSelected = React.lazy(() =>
   import("./components/Room/NoChatSelected")
@@ -25,14 +24,6 @@ const App = () => {
         <Routes>
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<Navigate to="/rooms" />} />
-            <Route
-              path="video-call/:roomId"
-              element={
-                <Suspense fallback={<Backdropp />}>
-                  <VideoCall />
-                </Suspense>
-              }
-            />
             <Route
               path="rooms"
               element={

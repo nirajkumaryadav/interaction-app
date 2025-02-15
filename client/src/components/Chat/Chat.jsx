@@ -8,7 +8,7 @@ import CallIcon from "@mui/icons-material/Call";
 import CallEndIcon from "@mui/icons-material/CallEnd";
 import Input from "./Input";
 import Messages from "./Messages";
-import { usePostMessageMutation } from "../../redux/api";
+import { usePostMessageMutation, useUploadFileMutation } from "../../redux/api";
 import messageReceived from "../../static/received.mp3";
 import messageSent from "../../static/sent.mp3";
 import call from "../../static/call.mp3";
@@ -20,7 +20,7 @@ import { styled } from "@mui/system";
 import { green, red } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 
-const Chat = ({ userId, name, room, prevMessages }) => {
+const Chat = ({ userId, name, room, prevMessages, roomId, roomHost }) => {
   const [playReceived] = useSound(messageReceived);
   const [playSent] = useSound(messageSent);
   const [playCall, { stop }] = useSound(call);
@@ -29,6 +29,7 @@ const Chat = ({ userId, name, room, prevMessages }) => {
   let socket = useRef(null);
   const navigate = useNavigate();
   const [postMessage] = usePostMessageMutation();
+  const [uploadFile] = useUploadFileMutation();
   const inCall = useSelector(callActive);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -154,7 +155,7 @@ const Chat = ({ userId, name, room, prevMessages }) => {
   return (
     <Box ref={scrollRef}>
       <div style={inCall ? { minHeight: "85vh" } : { minHeight: "70vh" }}>
-        <Messages messages={messages} name={name} userId={userId} />
+        <Messages messages={messages} name={name} userId={userId} roomId={roomId} roomHost={roomHost} />
 
         {showCall && (
           <Box

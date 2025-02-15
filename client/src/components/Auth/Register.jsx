@@ -1,5 +1,5 @@
 import { Backdrop, CircularProgress } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSignupMutation } from "../../redux/api";
 
 function Register() {
@@ -20,8 +20,18 @@ function Register() {
       confirmPassword: password2Field,
     };
     val.preventDefault();
+    console.log("Submitting signup form:", data); // Add this line
     await signup(data);
   };
+
+  useEffect(() => {
+    if (isError) {
+      console.error("Signup error:", error); // Add this line
+    }
+    if (isSuccess) {
+      console.log("Signup success:", response); // Add this line
+    }
+  }, [isError, isSuccess, error, response]);
 
   return (
     <>

@@ -38,18 +38,16 @@ const Rooms = ({ setOpen }) => {
                       to={`/rooms/${room._id}`}
                       style={{ textDecoration: "none" }}
                     >
-                      {
-                        <ListItemButton>
-                          <ListItemIcon>
-                            <GroupsIcon />
-                          </ListItemIcon>
-                          <ListItemText>
-                            <span className="fw-bold text-uppercase">
-                              {room.name}
-                            </span>
-                          </ListItemText>
-                        </ListItemButton>
-                      }
+                      <ListItemButton>
+                        <ListItemIcon>
+                          <GroupsIcon />
+                        </ListItemIcon>
+                        <ListItemText>
+                          <span className="fw-bold text-uppercase">
+                            {room.name}
+                          </span>
+                        </ListItemText>
+                      </ListItemButton>
                     </Link>
                   </li>
                 ))}

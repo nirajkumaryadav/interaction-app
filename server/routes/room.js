@@ -9,7 +9,8 @@ import {
   postMessage, 
   deleteRoom,
   editRoom,
-  uploadFile // Add this new controller
+  uploadFile, 
+  deleteMessage 
 } from "../controllers/room.js";
 
 const storage = multer.diskStorage({
@@ -36,6 +37,7 @@ router.patch("/:userid/:id/remove-user", removeUserFromRoom);
 
 // Message routes
 router.post("/:userid/:id/message", postMessage);
+router.delete("/:userid/:id/message/:messageId", deleteMessage); // Ensure this line is present
 
 // Add new file upload route
 router.post("/:userid/:id/upload", upload.single('file'), uploadFile);

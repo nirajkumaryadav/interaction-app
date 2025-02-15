@@ -23,7 +23,6 @@ import {
   useGetRoomQuery,
 } from "../../redux/api";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import VideocamIcon from "@mui/icons-material/Videocam";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -196,17 +195,6 @@ const Room = () => {
                     </Tooltip>
                   )}
 
-                  <Link
-                    to={`/video-call/${roomId}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <Tooltip arrow title="Start Video Call">
-                      <button className="btn btn-primary mx-2">
-                        <VideocamIcon />
-                      </button>
-                    </Tooltip>
-                  </Link>
-
                   <Tooltip arrow title="Leave Room">
                     <button
                       onClick={handleClick}
@@ -288,18 +276,6 @@ const Room = () => {
               </MenuItem>
             )}
 
-            <Link
-              to={`/video-call/${roomId}`}
-              style={{ textDecoration: "none" }}
-            >
-              <MenuItem>
-                <ListItemIcon>
-                  <VideocamIcon fontSize="small" />
-                </ListItemIcon>
-                Video Call
-              </MenuItem>
-            </Link>
-
             <MenuItem onClick={handleClick}>
               <ListItemIcon>
                 <ExitToAppIcon fontSize="small" />
@@ -334,6 +310,8 @@ const Room = () => {
               name={user.name}
               room={room}
               prevMessages={room.messages}
+              roomId={roomId} // Pass roomId to Chat component
+              roomHost={room.host} // Pass roomHost to Chat component
             />
           </Box>
         </>

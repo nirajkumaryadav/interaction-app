@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_ENDPOINT }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/' }),
   tagTypes: ["Room"],
   endpoints: (builder) => ({
     signin: builder.mutation({
@@ -105,6 +105,17 @@ export const api = createApi({
       }),
       invalidatesTags: (result, error, arg) => [{ type: "Room", id: arg.roomId }],
     }),
+
+    deleteMessage: builder.mutation({
+      query: ({ userId, roomId, messageId }) => ({
+        url: `rooms/${userId}/${roomId}/message/${messageId}`,
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Room", id: arg.roomId }],
+    }),
   }),
 });
 
@@ -120,5 +131,6 @@ export const {
   useAddUserInRoomMutation,
   useRemoveUserFromRoomMutation,
   usePostMessageMutation,
-  useUploadFileMutation, // Add this line
+  useUploadFileMutation,
+  useDeleteMessageMutation,
 } = api;
