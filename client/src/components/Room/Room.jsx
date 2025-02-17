@@ -15,6 +15,7 @@ import {
   Toolbar,
   Tooltip,
   Typography,
+  TextField,
 } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -28,6 +29,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import GroupIcon from "@mui/icons-material/Group"; // Add this import
 import { toast } from "react-toastify";
 import { Box } from "@mui/system";
 import { grey } from "@mui/material/colors";
@@ -37,6 +39,7 @@ import RemoveUserFromRoom from "./RemoveUserFromRoom";
 import AddUserInRoom from "./AddUserInRoom";
 import Chat from "../Chat/Chat";
 import "../../index.css";
+import "./Room.css"; // Add this import
 
 const Room = () => {
   const { roomId } = useParams();
@@ -44,6 +47,7 @@ const Room = () => {
   const inCall = useSelector(callActive);
   const user = JSON.parse(localStorage.getItem("user"));
   const [isProtected, setIsProtected] = useState(true);
+  const [searchTerm, setSearchTerm] = useState(""); // Add this state
   const {
     data: room,
     isSuccess,
@@ -67,6 +71,7 @@ const Room = () => {
   const [editRoom] = useEditRoomMutation();
   const [open, setOpen] = useState(false);
   const [openRemove, setOpenRemove] = useState(false);
+  const [openMembers, setOpenMembers] = useState(false); // Add this state
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const menuOpen = Boolean(anchorEl);
@@ -91,6 +96,14 @@ const Room = () => {
 
   const handleCloseRemove = () => {
     setOpenRemove(false);
+  };
+
+  const handleOpenMembers = () => {
+    setOpenMembers(true);
+  };
+
+  const handleCloseMembers = () => {
+    setOpenMembers(false);
   };
 
   const handleClick = async () => {
@@ -118,6 +131,10 @@ const Room = () => {
     }
     //eslint-disable-next-line
   }, [isDeleteSuccess, isDeleteError]);
+
+  const filteredUsers = room?.users.filter((user) =>
+    user.userName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -157,7 +174,7 @@ const Room = () => {
                       style={{ fontSize: "18px" }}
                       key={user.userId}
                     >
-                      {user.userName},{" "}
+                      {user.userId === room.host ? `${user.userName} (host)` : ""}
                     </span>
                   ))}
                 </Typography>
@@ -227,6 +244,12 @@ const Room = () => {
                       )}
                     </>
                   )}
+
+                  <Tooltip arrow title="View Members">
+                    <button onClick={handleOpenMembers} className="btn btn-primary mx-2">
+                      <GroupIcon />
+                    </button>
+                  </Tooltip>
                 </Box>
               </Toolbar>
             </AppBar>
@@ -254,6 +277,39 @@ const Room = () => {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleCloseRemove}>Cancel</Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog open={openMembers} onClose={handleCloseMembers} maxWidth="sm" fullWidth>
+            <DialogTitle>Room Members:</DialogTitle>
+            <DialogContent>
+              <TextField
+                fullWidth
+                placeholder="Search members..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                margin="normal"
+                className="search-field" // Add this class
+              />
+              <ul className="member-list"> {/* Add this class */}
+                {filteredUsers
+                  .filter((user) => user.userId === room.host)
+                  .map((user) => (
+                    <li key={user.userId} className="member-item"> {/* Add this class */}
+                      {user.userName} (host)
+                    </li>
+                  ))}
+                {filteredUsers
+                  .filter((user) => user.userId !== room.host)
+                  .map((user) => (
+                    <li key={user.userId} className="member-item"> {/* Add this class */}
+                      {user.userName}
+                    </li>
+                  ))}
+              </ul>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseMembers}>Close</Button>
             </DialogActions>
           </Dialog>
 

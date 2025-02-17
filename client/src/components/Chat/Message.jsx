@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useDeleteMessageMutation } from '../../redux/api';
 import './chat.css';
 import '../../index.scss';
-import { toast } from "react-toastify"; // Add this line
+import { toast } from "react-toastify";
 
 const Message = ({ message, name, userId, roomId, roomHost }) => {
   const [deleteMessage] = useDeleteMessageMutation();
@@ -24,7 +24,6 @@ const Message = ({ message, name, userId, roomId, roomHost }) => {
       }
     } catch (error) {
       console.error('Failed to delete message:', error);
-      // Add toast notification for better user feedback
       toast.error(error.data?.message || 'Failed to delete message');
     }
   };
@@ -33,21 +32,17 @@ const Message = ({ message, name, userId, roomId, roomHost }) => {
   let canDelete = isSentByCurrentUser || roomHost === userId;
 
   const renderFile = (fileUrl) => {
-    const fileExtension = fileUrl.split('.').pop().toLowerCase();
-    if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
-      return <img src={fileUrl} alt="uploaded file" style={{ maxWidth: '100%' }} />;
-    } else if (['mp4', 'webm', 'ogg'].includes(fileExtension)) {
-      return <video src={fileUrl} controls style={{ maxWidth: '100%' }} />;
-    } else if (['mp3', 'wav', 'ogg'].includes(fileExtension)) {
-      return <audio src={fileUrl} controls style={{ maxWidth: '100%' }} />;
-    } else {
-      return <a href={fileUrl} target="_blank" rel="noopener noreferrer">{message.message}</a>;
-    }
+    return <a href={fileUrl} target="_blank" rel="noopener noreferrer">{message.message}</a>;
   };
 
   return isSentByCurrentUser ? (
-    <div className="row justify-content-end pl-5 message-container">
-      <div className="rec d-flex flex-column align-items-end m-2 shadow p-2  border rounded w-auto">
+    <div className="row justify-content-end pl-5 message-container sent">
+      <Tooltip title="Delete">
+        <IconButton onClick={handleDelete} size="small" className="delete-icon">
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <div className="rec d-flex flex-column align-items-end m-2 shadow p-2 border rounded w-auto">
         <div>
           <em className="m-1 flex-start fw-bold text-uppercase">{name}</em>
           <em className="m-1 flex-end" style={{ fontSize: '10px' }}>
@@ -61,20 +56,10 @@ const Message = ({ message, name, userId, roomId, roomHost }) => {
         ) : (
           <h6 className="m-1">{message.message}</h6>
         )}
-        {canDelete && (
-          <Tooltip title="Delete">
-            <IconButton onClick={handleDelete} size="small" className="delete-icon">
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        )}
       </div>
     </div>
   ) : (
-    <div className="row justify-content-start pl-5 message-container">
-      <Avatar sx={{ marginTop: '12px' }}>
-        <PersonIcon />
-      </Avatar>
+    <div className="row justify-content-start pl-5 message-container received">
       <div className="sen d-flex flex-column align-items-end my-2 shadow p-2 border rounded w-auto">
         <div>
           <em className="m-1 flex-start fw-bold text-uppercase">
@@ -91,14 +76,14 @@ const Message = ({ message, name, userId, roomId, roomHost }) => {
         ) : (
           <h6 className="m-1">{message.message}</h6>
         )}
-        {canDelete && (
-          <Tooltip title="Delete">
-            <IconButton onClick={handleDelete} size="small" className="delete-icon">
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        )}
       </div>
+      {canDelete && (
+        <Tooltip title="Delete">
+          <IconButton onClick={handleDelete} size="small" className="delete-icon">
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      )}
     </div>
   );
 };

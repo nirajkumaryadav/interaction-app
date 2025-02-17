@@ -18,7 +18,7 @@ const __dirname = path.dirname(__filename);
 // Create uploads directory if it doesn't exist
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 const app = express();
@@ -30,23 +30,31 @@ app.use(cors({ origin: process.env.FRONTEND_URL }));
 app.use("/users", userRoutes);
 app.use("/rooms", roomRoutes);
 
-// Add this line to serve uploaded files
+// Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get("/", (req, res) => {
   res.send("API");
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Something went wrong!" });
+});
+
 const CONNECTION_URL = process.env.CONNECTION_URL;
 const PORT = process.env.PORT || 5000;
 
-mongoose.set('strictQuery', true); 
+mongoose.set('strictQuery', true);
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
+    console.log("MongoDB connected successfully");
     const server = app.listen(PORT, () =>
       console.log(`Server running on port: ${PORT}`)
     );
+
     const io = new Server(server, {
       cookie: false,
       cors: {
@@ -57,18 +65,24 @@ mongoose
     });
 
     io.on("connection", (socket) => {
+      console.log("A user connected:", socket.id);
+
       socket.on("join", ({ userId, name, room }, callback) => {
         const { error, user } = addUser({ id: socket.id, userId, name, room });
 
         if (error) return callback(error);
 
         socket.join(user.room);
-
+        console.log(`${user.name} joined room: ${user.room}`);
         callback();
       });
 
       socket.on("sendMessage", (message, callback) => {
         const user = getUser(socket.id);
+
+        if (!user) {
+          return callback("User not found");
+        }
 
         io.to(user.room).emit("message", {
           senderId: user.userId,
@@ -77,6 +91,7 @@ mongoose
           timestamp: new Date(),
         });
 
+        console.log(`Message sent by ${user.name} in room ${user.room}: ${message}`);
         callback();
       });
 
@@ -93,8 +108,13 @@ mongoose
       });
 
       socket.on("disconnect", () => {
-        removeUser(socket.id);
+        const user = removeUser(socket.id);
+        if (user) {
+          console.log(`${user.name} disconnected`);
+        }
       });
     });
   })
-  .catch((error) => console.log(error.message));
+  .catch((error) => {
+    console.error("MongoDB connection error:", error.message);
+  });

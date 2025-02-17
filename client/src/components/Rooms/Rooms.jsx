@@ -8,6 +8,7 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
+  Tooltip,
 } from "@mui/material";
 import GroupsIcon from "@mui/icons-material/Groups";
 import "./rooms.css";
@@ -33,22 +34,29 @@ const Rooms = ({ setOpen }) => {
             {isSuccess && data.length ? (
               <ul className="list-group">
                 {data.map((room) => (
-                  <li key={room._id} className="list-group-item">
-                    <Link
-                      to={`/rooms/${room._id}`}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <ListItemButton>
-                        <ListItemIcon>
-                          <GroupsIcon />
-                        </ListItemIcon>
-                        <ListItemText>
-                          <span className="fw-bold text-uppercase">
-                            {room.name}
-                          </span>
-                        </ListItemText>
-                      </ListItemButton>
-                    </Link>
+                  <li
+                    key={room._id}
+                    className={`list-group-item ${
+                      room.host === user._id ? "highlight" : ""
+                    }`}
+                  >
+                    <Tooltip title={`Host: ${room.users.find(u => u.userId === room.host).userName}`} arrow>
+                      <Link
+                        to={`/rooms/${room._id}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <ListItemButton>
+                          <ListItemIcon>
+                            <GroupsIcon />
+                          </ListItemIcon>
+                          <ListItemText>
+                            <span className="fw-bold text-uppercase">
+                              {room.name}
+                            </span>
+                          </ListItemText>
+                        </ListItemButton>
+                      </Link>
+                    </Tooltip>
                   </li>
                 ))}
               </ul>

@@ -1,0 +1,49 @@
+{
+  "name": "video-interaction-application",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server/index.js",
+    "client": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start --prefix client",
+    "build": "react-scripts build --prefix client",
+    "test": "react-scripts test --prefix client",
+    "eject": "react-scripts eject --prefix client"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "mongoose": "^8.10.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "jest": "^29.7.0",
+    "react-scripts": "^5.0.1"
+  }
+}

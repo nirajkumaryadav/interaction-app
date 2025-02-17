@@ -255,17 +255,21 @@ export const deleteMessage = async (req, res) => {
       return res.status(404).json({ message: "Room not found" });
     }
 
+    // Find the message in the room's messages array
     const message = room.messages.id(messageId);
     if (!message) {
       return res.status(404).json({ message: "Message not found" });
     }
 
+    // Check if the user is authorized to delete the message
     if (message.senderId !== userId && room.host !== userId) {
       return res.status(403).json({ message: "Not authorized to delete this message" });
     }
 
-    message.remove();
-    await room.save();
+    // Remove the message from the messages array
+    room.messages.pull(messageId); // Use pull to remove the subdocument by its _id
+    room.UpdatedAt = new Date(); // Update the room's UpdatedAt field
+    await room.save(); // Save the updated room document
 
     return res.status(200).json({ message: "Message deleted successfully" });
   } catch (error) {
